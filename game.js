@@ -1,27 +1,32 @@
 "use strict"
 const DRAW = 2;
-const PLAYER_WIN = 1;
-const COMPUTER_WIN = 0;
+const PLAYER = 1;
+const COMPUTER = 0;
 
 
 let humanScore = 0;
 let computerScore = 0;
 let roundCounter = 0;
 
+const buttons = document.querySelectorAll("button");
+buttons.forEach((button) => {
+    button.addEventListener("click", e => {
+        playRound(e);
+    });
+});
+const div_result = document.querySelectorAll(".result");
+
 function getComputerChoice() {
     let choice = Math.floor(Math.random() * 3); 
     switch (choice) {
         case 0:
             choice = `rock`;
-            console.log(`Computer picked: ${choice}`);
             break;
         case 1:
             choice = `paper`;
-            console.log(`Computer picked: ${choice}`);
             break;
         default:
             choice = `scissors`;
-            console.log(`Computer picked: ${choice}`);
             break;
     }
     return choice;
@@ -30,49 +35,84 @@ function getComputerChoice() {
 function playRound(choice) {
     let humanChoice = choice.target.textContent;
     let computerChoice = getComputerChoice();
-    console.log(`function playRound ` + humanChoice);
+
+    printPicks(humanChoice, PLAYER);
+    printPicks(computerChoice, COMPUTER);
+
     if (humanChoice == computerChoice) {
         playGame(DRAW);
     } else if (humanChoice == `rock` && computerChoice == `scissors`) {
-        playGame(PLAYER_WIN);
+        playGame(PLAYER);
     } else if (humanChoice == `paper` && computerChoice == `rock`) {
-        playGame(PLAYER_WIN);
+        playGame(PLAYER);
     } else if (humanChoice == `scissors` && computerChoice == `paper`) {
-        playGame(PLAYER_WIN);
+        playGame(PLAYER);
     }
     else {
-        playGame(COMPUTER_WIN);
+        playGame(COMPUTER);
     }
-};
+}
 
 function playGame(winner) {
+    updateResult(winner);
     switch (winner) {
         case 2:
             humanScore++
             computerScore++
+            console.log("Draw");
             break;
         case 1:
             humanScore++;
+            console.log("Player win");
             break;
         default:
             computerScore++
+            console.log("Computer win");
             break;
     }
-    roundCounter++;
+    roundCounter++;    
     if (roundCounter == 5) winnerGame();
 }
-function winnerGame() {
-    if (humanScore > computerScore) {
-        console.log(`You win the game!`);
-    } else {
-        console.log(`You lost the game!`);
-    }
+
+function updateResult(winner) {
+    if (winner === PLAYER) 
+        div_result.forEach(e => {
+        if(e.id === "human") e.textContent++;
+    })
+    else if (winner === COMPUTER)
+        div_result.forEach(e => {
+        if(e.id === "computer") e.textContent++; 
+    })
+    else div_result.forEach(e => e.textContent++);
+    
 }
 
-const buttons = document.querySelectorAll("button");
+function winnerGame() {
+    if (humanScore > computerScore) {
+        console.log(`-----------------\nYou win the game!`);
+    } else {
+        console.log(`-----------------\nYou lost the game!`);
+    }
+    roundCounter = 0;
+    humanScore = 0;
+    computerScore = 0;
+    div_result.forEach(e => {
+        e.textContent = 0;
+    })
 
-buttons.forEach((button) => {
-    button.addEventListener("click", e => {
-        playRound(e);
-    });
-});
+    console.log ("\n------------------------\n\n");
+    console.log("Starting again!");
+    console.log("\n-------------------------\n\n");
+}
+
+
+function printPicks(choice, caller) {
+    switch (caller) {
+        case COMPUTER:
+            console.log(`Computer picked: ${choice}`);
+            break;         
+        default:
+            console.log(`Player picked ${choice}`);
+            break;
+    }
+}
