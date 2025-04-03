@@ -1,0 +1,12 @@
+body {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+}
+
+button {
+    width: 100px;
+    border: none;
+    border-radius: 10px;
+    background: rgb(238, 153, 153)
+}

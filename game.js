@@ -1,7 +1,12 @@
 "use strict"
+const DRAW = 2;
+const PLAYER_WIN = 1;
+const COMPUTER_WIN = 0;
+
 
 let humanScore = 0;
 let computerScore = 0;
+let roundCounter = 0;
 
 function getComputerChoice() {
     let choice = Math.floor(Math.random() * 3); 
@@ -22,48 +27,41 @@ function getComputerChoice() {
     return choice;
 }
 
-function getHumanChoice() {
-    let choice = prompt("Rock, Paper, Scissors").toLowerCase();
-    console.log(`You picked: ${choice}`);
-    return choice;
-}
-
-function playGame() {
-    let result = () => {    
-        let humanChoice = getHumanChoice();
-        let computerChoice = getComputerChoice();
-
-        if (humanChoice == computerChoice) {
-            return 2;
-        } else if (humanChoice == `rock` && computerChoice == `scissors`) {
-            return 1;
-        } else if (humanChoice == `paper` && computerChoice == `rock`) {
-            return 1;
-        } else if (humanChoice == `scissors` && computerChoice == `paper`) {
-            return 1;
-        }
-        else {
-            return 0;
-        }
-    };
-
-    for (let counter = 0; counter < 5; counter++) {
-        switch (result()) {
-            case 2:
-                console.log(`Its a tie`);
-                humanScore++;
-                computerScore++;
-                break;
-            case 1: 
-                console.log(`You win!`);
-                humanScore++;
-                break;
-            case 0:
-                console.log(`You lose!`);
-                computerScore++;
-                break;
-        }  
+function playRound(choice) {
+    let humanChoice = choice.target.textContent;
+    let computerChoice = getComputerChoice();
+    console.log(`function playRound ` + humanChoice);
+    if (humanChoice == computerChoice) {
+        playGame(DRAW);
+    } else if (humanChoice == `rock` && computerChoice == `scissors`) {
+        playGame(PLAYER_WIN);
+    } else if (humanChoice == `paper` && computerChoice == `rock`) {
+        playGame(PLAYER_WIN);
+    } else if (humanChoice == `scissors` && computerChoice == `paper`) {
+        playGame(PLAYER_WIN);
     }
+    else {
+        playGame(COMPUTER_WIN);
+    }
+};
+
+function playGame(winner) {
+    switch (winner) {
+        case 2:
+            humanScore++
+            computerScore++
+            break;
+        case 1:
+            humanScore++;
+            break;
+        default:
+            computerScore++
+            break;
+    }
+    roundCounter++;
+    if (roundCounter == 5) winnerGame();
+}
+function winnerGame() {
     if (humanScore > computerScore) {
         console.log(`You win the game!`);
     } else {
@@ -71,4 +69,10 @@ function playGame() {
     }
 }
 
-playGame();
+const buttons = document.querySelectorAll("button");
+
+buttons.forEach((button) => {
+    button.addEventListener("click", e => {
+        playRound(e);
+    });
+});
